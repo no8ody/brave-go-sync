@@ -39,5 +39,10 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Compile packages and tests
-        run: go test -mod=mod -run '^$' ./...
+      - name: Compile non-server packages
+        run: |
+          packages=$(go list ./... | grep -v '^github.com/brave/go-sync/server$')
+          go test -mod=mod -run '^$' $packages
+
+      - name: Compile server test binary without running TestMain
+        run: go test -mod=mod -c ./server
