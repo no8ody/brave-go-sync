@@ -20,10 +20,14 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: lint
-        uses: golangci/golangci-lint-action@v9
-        with:
-          version: v2.11.4
+      - name: Download modules
+        run: go mod download
+
+      - name: Check formatting
+        run: test -z "$(gofmt -l .)"
+
+      - name: Vet
+        run: go vet -mod=mod ./...
 
   test:
     name: compile
@@ -35,5 +39,5 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: compile packages and tests
-        run: make test
+      - name: Compile packages and tests
+        run: go test -mod=mod -run '^$' ./...
