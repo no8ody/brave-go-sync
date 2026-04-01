@@ -28,9 +28,19 @@ type redisClusterClient struct {
 	client *redis.ClusterClient
 }
 
-// NewRedisClient create a client for standalone redis or redis cluster.
+// NewRedisClient creates a cache backend.
+//
+// If CACHE_BACKEND=memory is set, or REDIS_URL is empty, the process uses an
+// in-memory cache so the application can run as a single service without Redis.
+// Otherwise Redis is used as before.
 func NewRedisClient() RedisClient {
-	addrs := strings.Split(os.Getenv("REDIS_URL"), ",")
+	cacheBackend := strings.TrimSpace(os.Getenv("CACHE_BACKEND"))
+	redisURL := strings.TrimSpace(os.Getenv("REDIS_URL"))
+	if strings.EqualFold(cacheBackend, "memory") || redisURL == "" {
+		return NewMemoryClient()
+	}
+
+	addrs := strings.Split(redisURL, ",")
 	env := os.Getenv("ENV")
 	cluster := env != "local" && env != ""
 	poolSize, err := strconv.Atoi(os.Getenv("REDIS_POOL_SIZE"))
@@ -38,15 +48,9 @@ func NewRedisClient() RedisClient {
 		poolSize = 100
 	}
 
-	// Fallback to localhost:6397 and non-cluster client if redis env is not set.
-	if len(addrs) == 0 {
-		addrs = []string{"localhost:6397"}
-		cluster = false
-	}
-
 	var r RedisClient
 
-	if !cluster {
+	if !cluster || len(addrs) == 1 {
 		client := redis.NewClient(&redis.Options{
 			Addr: addrs[0],
 		})

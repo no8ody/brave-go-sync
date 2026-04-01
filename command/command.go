@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/rs/zerolog/log"
 
 	"github.com/brave/go-sync/cache"
@@ -266,7 +265,7 @@ func handleCommitRequest(ctx context.Context, cache *cache.Cache, commitMsg *syn
 		if err != nil { // Can't unmarshal & marshal the message from PB into DB format
 			rspType := sync_pb.CommitResponse_INVALID_MESSAGE
 			entryRsp.ResponseType = &rspType
-			entryRsp.ErrorMessage = aws.String(fmt.Sprintf("Cannot convert protobuf sync entity to DB format: %v", err.Error()))
+			entryRsp.ErrorMessage = stringPtr(fmt.Sprintf("Cannot convert protobuf sync entity to DB format: %v", err.Error()))
 			continue
 		}
 
@@ -289,7 +288,7 @@ func handleCommitRequest(ctx context.Context, cache *cache.Cache, commitMsg *syn
 				log.Error().Err(err).Msg("Insert history sync entity failed")
 				rspType := sync_pb.CommitResponse_TRANSIENT_ERROR
 				entryRsp.ResponseType = &rspType
-				entryRsp.ErrorMessage = aws.String(fmt.Sprintf("Insert history sync entity failed: %v", err.Error()))
+				entryRsp.ErrorMessage = stringPtr(fmt.Sprintf("Insert history sync entity failed: %v", err.Error()))
 				continue
 			}
 		}
@@ -299,7 +298,7 @@ func handleCommitRequest(ctx context.Context, cache *cache.Cache, commitMsg *syn
 			if currentNormalItemCount+currentHistoryItemCount+newNormalCount+newHistoryCount >= maxClientObjectQuota+boostedQuotaAddition {
 				rspType := sync_pb.CommitResponse_OVER_QUOTA
 				entryRsp.ResponseType = &rspType
-				entryRsp.ErrorMessage = aws.String(fmt.Sprintf("There are already %v non-deleted objects in store", currentNormalItemCount+currentHistoryItemCount))
+				entryRsp.ErrorMessage = stringPtr(fmt.Sprintf("There are already %v non-deleted objects in store", currentNormalItemCount+currentHistoryItemCount))
 				continue
 			}
 
@@ -315,7 +314,7 @@ func handleCommitRequest(ctx context.Context, cache *cache.Cache, commitMsg *syn
 						rspType = sync_pb.CommitResponse_CONFLICT
 					}
 					entryRsp.ResponseType = &rspType
-					entryRsp.ErrorMessage = aws.String(fmt.Sprintf("Insert sync entity failed: %v", err.Error()))
+					entryRsp.ErrorMessage = stringPtr(fmt.Sprintf("Insert sync entity failed: %v", err.Error()))
 					continue
 				}
 
@@ -337,7 +336,7 @@ func handleCommitRequest(ctx context.Context, cache *cache.Cache, commitMsg *syn
 				log.Error().Err(err).Msg("Update sync entity failed")
 				rspType := sync_pb.CommitResponse_TRANSIENT_ERROR
 				entryRsp.ResponseType = &rspType
-				entryRsp.ErrorMessage = aws.String(fmt.Sprintf("Update sync entity failed: %v", err.Error()))
+				entryRsp.ErrorMessage = stringPtr(fmt.Sprintf("Update sync entity failed: %v", err.Error()))
 				continue
 			}
 			if conflict {
@@ -363,7 +362,7 @@ func handleCommitRequest(ctx context.Context, cache *cache.Cache, commitMsg *syn
 		// Prepare success response
 		rspType := sync_pb.CommitResponse_SUCCESS
 		entryRsp.ResponseType = &rspType
-		entryRsp.IdString = aws.String(entityToCommit.ID)
+		entryRsp.IdString = stringPtr(entityToCommit.ID)
 		entryRsp.Version = entityToCommit.Version
 		entryRsp.Mtime = entityToCommit.Mtime
 	}
@@ -438,10 +437,10 @@ func handleClearServerDataRequest(ctx context.Context, cache *cache.Cache, db da
 func HandleClientToServerMessage(ctx context.Context, cache *cache.Cache, pb *sync_pb.ClientToServerMessage, pbRsp *sync_pb.ClientToServerResponse, db datastore.Datastore, clientID string) error {
 	// Create ClientToServerResponse and fill general fields for both GU and
 	// Commit.
-	pbRsp.StoreBirthday = aws.String(storeBirthday)
+	pbRsp.StoreBirthday = stringPtr(storeBirthday)
 	pbRsp.ClientCommand = &sync_pb.ClientCommand{
-		SetSyncPollInterval: aws.Int32(setSyncPollInterval),
-		MaxCommitBatchSize:  aws.Int32(maxCommitBatchSize)}
+		SetSyncPollInterval: int32Ptr(setSyncPollInterval),
+		MaxCommitBatchSize:  int32Ptr(maxCommitBatchSize)}
 
 	var err error
 	if pb.MessageContents == nil {
@@ -452,7 +451,7 @@ func HandleClientToServerMessage(ctx context.Context, cache *cache.Cache, pb *sy
 		pbRsp.ErrorCode, err = handleGetUpdatesRequest(ctx, cache, pb.GetUpdates, guRsp, db, clientID)
 		if err != nil {
 			if pbRsp.ErrorCode != nil {
-				pbRsp.ErrorMessage = aws.String(err.Error())
+				pbRsp.ErrorMessage = stringPtr(err.Error())
 				return nil
 			}
 			// In seledom error cases which are not temporary and will not go away
@@ -466,7 +465,7 @@ func HandleClientToServerMessage(ctx context.Context, cache *cache.Cache, pb *sy
 		pbRsp.ErrorCode, err = handleCommitRequest(context.TODO(), cache, pb.Commit, commitRsp, db, clientID)
 		if err != nil {
 			if pbRsp.ErrorCode != nil {
-				pbRsp.ErrorMessage = aws.String(err.Error())
+				pbRsp.ErrorMessage = stringPtr(err.Error())
 				return nil
 			}
 			// In seledom error cases which are not temporary and will not go away
@@ -480,7 +479,7 @@ func HandleClientToServerMessage(ctx context.Context, cache *cache.Cache, pb *sy
 		pbRsp.ErrorCode, err = handleClearServerDataRequest(context.Background(), cache, db, pb.ClearServerData, clientID)
 		if err != nil {
 			if pbRsp.ErrorCode != nil {
-				pbRsp.ErrorMessage = aws.String(err.Error())
+				pbRsp.ErrorMessage = stringPtr(err.Error())
 				return nil
 			}
 			// In seldom error cases which are not temporary and will not go away
@@ -494,3 +493,7 @@ func HandleClientToServerMessage(ctx context.Context, cache *cache.Cache, pb *sy
 
 	return nil
 }
+
+func stringPtr(v string) *string { return &v }
+
+func int32Ptr(v int32) *int32 { return &v }

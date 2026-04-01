@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/google/uuid"
 
 	"github.com/brave/go-sync/datastore"
@@ -34,7 +33,7 @@ func createServerDefinedUniqueEntity(name string, serverDefinedTag string, clien
 
 	pbEntity := &sync_pb.SyncEntity{
 		Ctime: &now, Mtime: &now, Deleted: &deleted, Folder: &folder,
-		Name: aws.String(name), ServerDefinedUniqueTag: aws.String(serverDefinedTag),
+		Name: stringPtr(name), ServerDefinedUniqueTag: stringPtr(serverDefinedTag),
 		Version: &version, ParentIdString: &parentID,
 		IdString: &idString, Specifics: specifics}
 

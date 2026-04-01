@@ -64,14 +64,14 @@ func setupRouter(ctx context.Context, logger *zerolog.Logger) (context.Context, 
 	r.Use(batware.BearerToken)
 	r.Use(middleware.CommonResponseHeaders)
 
-	db, err := datastore.NewDynamo()
+	db, err := datastore.NewPostgres()
 	if err != nil {
 		sentry.CaptureException(err)
 		log.Panic().Err(err).Msg("Must be able to init datastore to start")
 	}
 
 	redis := cache.NewRedisClient()
-	cache := cache.NewCache(cache.NewRedisClientWithPrometheus(redis, "redis"))
+	cache := cache.NewCache(cache.NewRedisClientWithPrometheus(redis, "cache"))
 
 	// Provide datastore & cache via context
 	ctx = context.WithValue(ctx, syncContext.ContextKeyDatastore, db)
@@ -79,7 +79,7 @@ func setupRouter(ctx context.Context, logger *zerolog.Logger) (context.Context, 
 
 	r.Mount("/v2", controller.SyncRouter(
 		cache,
-		datastore.NewDatastoreWithPrometheus(db, "dynamo")))
+		datastore.NewDatastoreWithPrometheus(db, "postgres")))
 	r.Get("/metrics", batware.Metrics())
 
 	log.Info().
