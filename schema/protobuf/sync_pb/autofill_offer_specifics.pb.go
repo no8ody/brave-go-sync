@@ -190,7 +190,8 @@ type AutofillOfferSpecifics_PromoCodeOfferData_ struct {
 	PromoCodeOfferData *AutofillOfferSpecifics_PromoCodeOfferData `protobuf:"bytes,9,opt,name=promo_code_offer_data,json=promoCodeOfferData,oneof"`
 }
 
-func (*AutofillOfferSpecifics_CardLinkedOfferData_) isAutofillOfferSpecifics_TypeSpecificOfferData() {}
+func (*AutofillOfferSpecifics_CardLinkedOfferData_) isAutofillOfferSpecifics_TypeSpecificOfferData() {
+}
 
 func (*AutofillOfferSpecifics_PromoCodeOfferData_) isAutofillOfferSpecifics_TypeSpecificOfferData() {}
 
