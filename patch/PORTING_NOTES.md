@@ -43,6 +43,10 @@ Server wiring:
 4. Review upstream changes in the files listed above before merging.
 5. Rebuild the unified diff if the patch set changes.
 
+## Module maintenance
+
+Keep `go.mod` and `go.sum` in sync after dependency changes. The PostgreSQL backend adds `pgx` transitives that must remain in the tidy module graph for Go 1.24 CI runs.
+
 ## Areas that may need manual review
 
 - Any upstream change touching datastore interfaces or entity validation.

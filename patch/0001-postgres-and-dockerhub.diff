@@ -1,6 +1,6 @@
-diff -ruN '--exclude=.git' orig/brave-go-sync/.github/workflows/ci.yml work/.github/workflows/ci.yml
---- orig/brave-go-sync/.github/workflows/ci.yml	2026-04-01 17:41:40.000000000 +0000
-+++ work/.github/workflows/ci.yml	2026-04-01 19:42:52.753763112 +0000
+diff -ruN original/brave-go-sync/.github/workflows/ci.yml brave-go-sync/.github/workflows/ci.yml
+--- original/brave-go-sync/.github/workflows/ci.yml	2026-04-01 17:41:40.000000000 +0000
++++ brave-go-sync/.github/workflows/ci.yml	2026-04-01 19:43:39.000000000 +0000
 @@ -14,20 +14,26 @@
      name: lint
      runs-on: ubuntu-latest
@@ -36,9 +36,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/.github/workflows/ci.yml work/.git
 -        run: make docker && make docker-test
 +      - name: compile packages and tests
 +        run: make test
-diff -ruN '--exclude=.git' orig/brave-go-sync/.github/workflows/docker-publish.yml work/.github/workflows/docker-publish.yml
---- orig/brave-go-sync/.github/workflows/docker-publish.yml	1970-01-01 00:00:00.000000000 +0000
-+++ work/.github/workflows/docker-publish.yml	2026-04-01 19:42:52.755217213 +0000
+diff -ruN original/brave-go-sync/.github/workflows/docker-publish.yml brave-go-sync/.github/workflows/docker-publish.yml
+--- original/brave-go-sync/.github/workflows/docker-publish.yml	1970-01-01 00:00:00.000000000 +0000
++++ brave-go-sync/.github/workflows/docker-publish.yml	2026-04-01 19:43:39.000000000 +0000
 @@ -0,0 +1,53 @@
 +name: docker-publish
 +
@@ -93,9 +93,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/.github/workflows/docker-publish.y
 +            BUILD_TIME=${{ steps.meta.outputs.build_time }}
 +          cache-from: type=gha
 +          cache-to: type=gha,mode=max
-diff -ruN '--exclude=.git' orig/brave-go-sync/Makefile work/Makefile
---- orig/brave-go-sync/Makefile	2026-04-01 17:41:40.000000000 +0000
-+++ work/Makefile	2026-04-01 19:24:11.000000000 +0000
+diff -ruN original/brave-go-sync/Makefile brave-go-sync/Makefile
+--- original/brave-go-sync/Makefile	2026-04-01 17:41:40.000000000 +0000
++++ brave-go-sync/Makefile	2026-04-01 19:24:11.000000000 +0000
 @@ -20,7 +20,7 @@
  	go run main.go
  
@@ -114,9 +114,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/Makefile work/Makefile
  
  instrumented:
  	gowrap gen -p github.com/brave/go-sync/datastore -i Datastore -t ./.prom-gowrap.tmpl -o ./datastore/instrumented_datastore.go
-diff -ruN '--exclude=.git' orig/brave-go-sync/README.md work/README.md
---- orig/brave-go-sync/README.md	2026-04-01 17:41:40.000000000 +0000
-+++ work/README.md	2026-04-01 19:24:11.000000000 +0000
+diff -ruN original/brave-go-sync/README.md brave-go-sync/README.md
+--- original/brave-go-sync/README.md	2026-04-01 17:41:40.000000000 +0000
++++ brave-go-sync/README.md	2026-04-01 19:24:11.000000000 +0000
 @@ -1,41 +1,97 @@
  # Brave Sync Server v2
  
@@ -235,9 +235,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/README.md work/README.md
  
 -Changes to `datastore/datastore.go` or `cache/cache.go` should be followed with the above command.
 +Changes to `datastore/datastore.go` or `cache/cache.go` should be followed by the above command.
-diff -ruN '--exclude=.git' orig/brave-go-sync/cache/memory.go work/cache/memory.go
---- orig/brave-go-sync/cache/memory.go	1970-01-01 00:00:00.000000000 +0000
-+++ work/cache/memory.go	2026-04-01 19:24:11.000000000 +0000
+diff -ruN original/brave-go-sync/cache/memory.go brave-go-sync/cache/memory.go
+--- original/brave-go-sync/cache/memory.go	1970-01-01 00:00:00.000000000 +0000
++++ brave-go-sync/cache/memory.go	2026-04-01 19:24:11.000000000 +0000
 @@ -0,0 +1,97 @@
 +package cache
 +
@@ -336,9 +336,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/cache/memory.go work/cache/memory.
 +func (v memoryValue) isExpired() bool {
 +	return !v.expiresAt.IsZero() && time.Now().After(v.expiresAt)
 +}
-diff -ruN '--exclude=.git' orig/brave-go-sync/cache/redis.go work/cache/redis.go
---- orig/brave-go-sync/cache/redis.go	2026-04-01 17:41:40.000000000 +0000
-+++ work/cache/redis.go	2026-04-01 19:24:11.000000000 +0000
+diff -ruN original/brave-go-sync/cache/redis.go brave-go-sync/cache/redis.go
+--- original/brave-go-sync/cache/redis.go	2026-04-01 17:41:40.000000000 +0000
++++ brave-go-sync/cache/redis.go	2026-04-01 19:24:11.000000000 +0000
 @@ -28,9 +28,19 @@
  	client *redis.ClusterClient
  }
@@ -378,9 +378,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/cache/redis.go work/cache/redis.go
  		client := redis.NewClient(&redis.Options{
  			Addr: addrs[0],
  		})
-diff -ruN '--exclude=.git' orig/brave-go-sync/command/command.go work/command/command.go
---- orig/brave-go-sync/command/command.go	2026-04-01 17:41:40.000000000 +0000
-+++ work/command/command.go	2026-04-01 19:24:12.000000000 +0000
+diff -ruN original/brave-go-sync/command/command.go brave-go-sync/command/command.go
+--- original/brave-go-sync/command/command.go	2026-04-01 17:41:40.000000000 +0000
++++ brave-go-sync/command/command.go	2026-04-01 19:24:12.000000000 +0000
 @@ -6,7 +6,6 @@
  	"errors"
  	"fmt"
@@ -492,9 +492,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/command/command.go work/command/co
 +func stringPtr(v string) *string { return &v }
 +
 +func int32Ptr(v int32) *int32 { return &v }
-diff -ruN '--exclude=.git' orig/brave-go-sync/command/server_defined_unique_entity.go work/command/server_defined_unique_entity.go
---- orig/brave-go-sync/command/server_defined_unique_entity.go	2026-04-01 17:41:40.000000000 +0000
-+++ work/command/server_defined_unique_entity.go	2026-04-01 19:24:12.000000000 +0000
+diff -ruN original/brave-go-sync/command/server_defined_unique_entity.go brave-go-sync/command/server_defined_unique_entity.go
+--- original/brave-go-sync/command/server_defined_unique_entity.go	2026-04-01 17:41:40.000000000 +0000
++++ brave-go-sync/command/server_defined_unique_entity.go	2026-04-01 19:24:12.000000000 +0000
 @@ -5,7 +5,6 @@
  	"fmt"
  	"time"
@@ -512,9 +512,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/command/server_defined_unique_enti
  		Version: &version, ParentIdString: &parentID,
  		IdString: &idString, Specifics: specifics}
  
-diff -ruN '--exclude=.git' orig/brave-go-sync/datastore/client_item_counts.go work/datastore/client_item_counts.go
---- orig/brave-go-sync/datastore/client_item_counts.go	1970-01-01 00:00:00.000000000 +0000
-+++ work/datastore/client_item_counts.go	2026-04-01 19:24:12.000000000 +0000
+diff -ruN original/brave-go-sync/datastore/client_item_counts.go brave-go-sync/datastore/client_item_counts.go
+--- original/brave-go-sync/datastore/client_item_counts.go	1970-01-01 00:00:00.000000000 +0000
++++ brave-go-sync/datastore/client_item_counts.go	2026-04-01 19:24:12.000000000 +0000
 @@ -0,0 +1,37 @@
 +package datastore
 +
@@ -553,9 +553,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/datastore/client_item_counts.go wo
 +		counts.HistoryItemCountPeriod3 +
 +		counts.HistoryItemCountPeriod4
 +}
-diff -ruN '--exclude=.git' orig/brave-go-sync/datastore/entity.go work/datastore/entity.go
---- orig/brave-go-sync/datastore/entity.go	1970-01-01 00:00:00.000000000 +0000
-+++ work/datastore/entity.go	2026-04-01 19:24:12.000000000 +0000
+diff -ruN original/brave-go-sync/datastore/entity.go brave-go-sync/datastore/entity.go
+--- original/brave-go-sync/datastore/entity.go	1970-01-01 00:00:00.000000000 +0000
++++ brave-go-sync/datastore/entity.go	2026-04-01 19:24:12.000000000 +0000
 @@ -0,0 +1,240 @@
 +package datastore
 +
@@ -797,9 +797,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/datastore/entity.go work/datastore
 +	_ sort.Interface = SyncEntityByClientIDID{}
 +	_ sort.Interface = SyncEntityByMtime{}
 +)
-diff -ruN '--exclude=.git' orig/brave-go-sync/datastore/postgres.go work/datastore/postgres.go
---- orig/brave-go-sync/datastore/postgres.go	1970-01-01 00:00:00.000000000 +0000
-+++ work/datastore/postgres.go	2026-04-01 19:24:12.000000000 +0000
+diff -ruN original/brave-go-sync/datastore/postgres.go brave-go-sync/datastore/postgres.go
+--- original/brave-go-sync/datastore/postgres.go	1970-01-01 00:00:00.000000000 +0000
++++ brave-go-sync/datastore/postgres.go	2026-04-01 19:24:12.000000000 +0000
 @@ -0,0 +1,709 @@
 +package datastore
 +
@@ -1510,9 +1510,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/datastore/postgres.go work/datasto
 +	}
 +	return nil
 +}
-diff -ruN '--exclude=.git' orig/brave-go-sync/docker-compose.yml work/docker-compose.yml
---- orig/brave-go-sync/docker-compose.yml	2026-04-01 17:41:40.000000000 +0000
-+++ work/docker-compose.yml	2026-04-01 19:24:12.000000000 +0000
+diff -ruN original/brave-go-sync/docker-compose.yml brave-go-sync/docker-compose.yml
+--- original/brave-go-sync/docker-compose.yml	2026-04-01 17:41:40.000000000 +0000
++++ brave-go-sync/docker-compose.yml	2026-04-01 19:24:12.000000000 +0000
 @@ -1,31 +1,4 @@
 -networks:
 -  sync:
@@ -1583,9 +1583,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/docker-compose.yml work/docker-com
 -      - sync
 +      - CACHE_BACKEND=memory
 +      - DATABASE_URL=${DATABASE_URL}
-diff -ruN '--exclude=.git' orig/brave-go-sync/go.mod work/go.mod
---- orig/brave-go-sync/go.mod	2026-04-01 17:41:40.000000000 +0000
-+++ work/go.mod	2026-04-01 19:24:12.000000000 +0000
+diff -ruN original/brave-go-sync/go.mod brave-go-sync/go.mod
+--- original/brave-go-sync/go.mod	2026-04-01 17:41:40.000000000 +0000
++++ brave-go-sync/go.mod	2026-04-01 19:51:49.263263454 +0000
 @@ -3,15 +3,11 @@
  go 1.24.0
  
@@ -1603,7 +1603,7 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/go.mod work/go.mod
  	github.com/prometheus/client_golang v1.23.2
  	github.com/redis/go-redis/v9 v9.17.0
  	github.com/rs/zerolog v1.34.0
-@@ -21,19 +17,6 @@
+@@ -21,28 +17,15 @@
  
  require (
  	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
@@ -1623,9 +1623,37 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/go.mod work/go.mod
  	github.com/beorn7/perks v1.0.1 // indirect
  	github.com/cespare/xxhash/v2 v2.3.0 // indirect
  	github.com/davecgh/go-spew v1.1.1 // indirect
-diff -ruN '--exclude=.git' orig/brave-go-sync/go.sum work/go.sum
---- orig/brave-go-sync/go.sum	2026-04-01 17:41:40.000000000 +0000
-+++ work/go.sum	2026-04-01 19:42:52.756636045 +0000
+ 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+ 	github.com/go-chi/chi v4.1.2+incompatible // indirect
+-	github.com/gomodule/redigo v2.0.0+incompatible // indirect
++	github.com/jackc/pgpassfile v1.0.0 // indirect
++	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
++	github.com/jackc/puddle/v2 v2.2.2 // indirect
+ 	github.com/hashicorp/golang-lru v1.0.2 // indirect
+-	github.com/jmespath/go-jmespath v0.4.0 // indirect
+-	github.com/kr/text v0.2.0 // indirect
+ 	github.com/mattn/go-colorable v0.1.14 // indirect
+ 	github.com/mattn/go-isatty v0.0.20 // indirect
+ 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
+@@ -50,7 +33,6 @@
+ 	github.com/prometheus/client_model v0.6.2 // indirect
+ 	github.com/prometheus/common v0.66.1 // indirect
+ 	github.com/prometheus/procfs v0.16.1 // indirect
+-	github.com/rogpeppe/go-internal v1.11.0 // indirect
+ 	github.com/rs/xid v1.6.0 // indirect
+ 	github.com/satori/go.uuid v1.2.0 // indirect
+ 	github.com/shengdoushi/base58 v1.0.0 // indirect
+@@ -58,6 +40,7 @@
+ 	github.com/throttled/throttled/v2 v2.13.0 // indirect
+ 	go.yaml.in/yaml/v2 v2.4.2 // indirect
+ 	golang.org/x/crypto v0.45.0 // indirect
++	golang.org/x/sync v0.16.0 // indirect
+ 	golang.org/x/sys v0.38.0 // indirect
+ 	golang.org/x/text v0.31.0 // indirect
+ 	gopkg.in/yaml.v3 v3.0.1 // indirect
+diff -ruN original/brave-go-sync/go.sum brave-go-sync/go.sum
+--- original/brave-go-sync/go.sum	2026-04-01 17:41:40.000000000 +0000
++++ brave-go-sync/go.sum	2026-04-01 19:43:39.000000000 +0000
 @@ -44,9 +44,9 @@
  github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
  github.com/brave-intl/bat-go/libs v0.0.0-20250620104757-9e2f8ff87fd8 h1:DUBBDWBwozxpET6HCTDSRKAfyiqKRNvOyeqI463epaI=
@@ -1711,13 +1739,13 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/go.sum work/go.sum
  golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
  golang.org/x/term v0.0.0-20210927222741-03fcf44c2211/go.mod h1:jbD1KX2456YbFQfuXm/mYQcufACuNUgVhRMnK/tPxf8=
  golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
-diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.diff work/patch/0001-postgres-and-dockerhub.diff
---- orig/brave-go-sync/patch/0001-postgres-and-dockerhub.diff	1970-01-01 00:00:00.000000000 +0000
-+++ work/patch/0001-postgres-and-dockerhub.diff	2026-04-01 19:43:04.025429413 +0000
-@@ -0,0 +1,1713 @@
-+diff -ruN '--exclude=.git' orig/brave-go-sync/.github/workflows/ci.yml work/.github/workflows/ci.yml
-+--- orig/brave-go-sync/.github/workflows/ci.yml	2026-04-01 17:41:40.000000000 +0000
-++++ work/.github/workflows/ci.yml	2026-04-01 19:42:52.753763112 +0000
+diff -ruN original/brave-go-sync/patch/0001-postgres-and-dockerhub.diff brave-go-sync/patch/0001-postgres-and-dockerhub.diff
+--- original/brave-go-sync/patch/0001-postgres-and-dockerhub.diff	1970-01-01 00:00:00.000000000 +0000
++++ brave-go-sync/patch/0001-postgres-and-dockerhub.diff	2026-04-01 19:52:17.166881760 +0000
+@@ -0,0 +1,1741 @@
++diff -ruN original/brave-go-sync/.github/workflows/ci.yml brave-go-sync/.github/workflows/ci.yml
++--- original/brave-go-sync/.github/workflows/ci.yml	2026-04-01 17:41:40.000000000 +0000
+++++ brave-go-sync/.github/workflows/ci.yml	2026-04-01 19:43:39.000000000 +0000
 +@@ -14,20 +14,26 @@
 +     name: lint
 +     runs-on: ubuntu-latest
@@ -1753,9 +1781,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 +-        run: make docker && make docker-test
 ++      - name: compile packages and tests
 ++        run: make test
-+diff -ruN '--exclude=.git' orig/brave-go-sync/.github/workflows/docker-publish.yml work/.github/workflows/docker-publish.yml
-+--- orig/brave-go-sync/.github/workflows/docker-publish.yml	1970-01-01 00:00:00.000000000 +0000
-++++ work/.github/workflows/docker-publish.yml	2026-04-01 19:42:52.755217213 +0000
++diff -ruN original/brave-go-sync/.github/workflows/docker-publish.yml brave-go-sync/.github/workflows/docker-publish.yml
++--- original/brave-go-sync/.github/workflows/docker-publish.yml	1970-01-01 00:00:00.000000000 +0000
+++++ brave-go-sync/.github/workflows/docker-publish.yml	2026-04-01 19:43:39.000000000 +0000
 +@@ -0,0 +1,53 @@
 ++name: docker-publish
 ++
@@ -1810,9 +1838,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 ++            BUILD_TIME=${{ steps.meta.outputs.build_time }}
 ++          cache-from: type=gha
 ++          cache-to: type=gha,mode=max
-+diff -ruN '--exclude=.git' orig/brave-go-sync/Makefile work/Makefile
-+--- orig/brave-go-sync/Makefile	2026-04-01 17:41:40.000000000 +0000
-++++ work/Makefile	2026-04-01 19:24:11.000000000 +0000
++diff -ruN original/brave-go-sync/Makefile brave-go-sync/Makefile
++--- original/brave-go-sync/Makefile	2026-04-01 17:41:40.000000000 +0000
+++++ brave-go-sync/Makefile	2026-04-01 19:24:11.000000000 +0000
 +@@ -20,7 +20,7 @@
 + 	go run main.go
 + 
@@ -1831,9 +1859,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 + 
 + instrumented:
 + 	gowrap gen -p github.com/brave/go-sync/datastore -i Datastore -t ./.prom-gowrap.tmpl -o ./datastore/instrumented_datastore.go
-+diff -ruN '--exclude=.git' orig/brave-go-sync/README.md work/README.md
-+--- orig/brave-go-sync/README.md	2026-04-01 17:41:40.000000000 +0000
-++++ work/README.md	2026-04-01 19:24:11.000000000 +0000
++diff -ruN original/brave-go-sync/README.md brave-go-sync/README.md
++--- original/brave-go-sync/README.md	2026-04-01 17:41:40.000000000 +0000
+++++ brave-go-sync/README.md	2026-04-01 19:24:11.000000000 +0000
 +@@ -1,41 +1,97 @@
 + # Brave Sync Server v2
 + 
@@ -1952,9 +1980,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 + 
 +-Changes to `datastore/datastore.go` or `cache/cache.go` should be followed with the above command.
 ++Changes to `datastore/datastore.go` or `cache/cache.go` should be followed by the above command.
-+diff -ruN '--exclude=.git' orig/brave-go-sync/cache/memory.go work/cache/memory.go
-+--- orig/brave-go-sync/cache/memory.go	1970-01-01 00:00:00.000000000 +0000
-++++ work/cache/memory.go	2026-04-01 19:24:11.000000000 +0000
++diff -ruN original/brave-go-sync/cache/memory.go brave-go-sync/cache/memory.go
++--- original/brave-go-sync/cache/memory.go	1970-01-01 00:00:00.000000000 +0000
+++++ brave-go-sync/cache/memory.go	2026-04-01 19:24:11.000000000 +0000
 +@@ -0,0 +1,97 @@
 ++package cache
 ++
@@ -2053,9 +2081,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 ++func (v memoryValue) isExpired() bool {
 ++	return !v.expiresAt.IsZero() && time.Now().After(v.expiresAt)
 ++}
-+diff -ruN '--exclude=.git' orig/brave-go-sync/cache/redis.go work/cache/redis.go
-+--- orig/brave-go-sync/cache/redis.go	2026-04-01 17:41:40.000000000 +0000
-++++ work/cache/redis.go	2026-04-01 19:24:11.000000000 +0000
++diff -ruN original/brave-go-sync/cache/redis.go brave-go-sync/cache/redis.go
++--- original/brave-go-sync/cache/redis.go	2026-04-01 17:41:40.000000000 +0000
+++++ brave-go-sync/cache/redis.go	2026-04-01 19:24:11.000000000 +0000
 +@@ -28,9 +28,19 @@
 + 	client *redis.ClusterClient
 + }
@@ -2095,9 +2123,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 + 		client := redis.NewClient(&redis.Options{
 + 			Addr: addrs[0],
 + 		})
-+diff -ruN '--exclude=.git' orig/brave-go-sync/command/command.go work/command/command.go
-+--- orig/brave-go-sync/command/command.go	2026-04-01 17:41:40.000000000 +0000
-++++ work/command/command.go	2026-04-01 19:24:12.000000000 +0000
++diff -ruN original/brave-go-sync/command/command.go brave-go-sync/command/command.go
++--- original/brave-go-sync/command/command.go	2026-04-01 17:41:40.000000000 +0000
+++++ brave-go-sync/command/command.go	2026-04-01 19:24:12.000000000 +0000
 +@@ -6,7 +6,6 @@
 + 	"errors"
 + 	"fmt"
@@ -2209,9 +2237,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 ++func stringPtr(v string) *string { return &v }
 ++
 ++func int32Ptr(v int32) *int32 { return &v }
-+diff -ruN '--exclude=.git' orig/brave-go-sync/command/server_defined_unique_entity.go work/command/server_defined_unique_entity.go
-+--- orig/brave-go-sync/command/server_defined_unique_entity.go	2026-04-01 17:41:40.000000000 +0000
-++++ work/command/server_defined_unique_entity.go	2026-04-01 19:24:12.000000000 +0000
++diff -ruN original/brave-go-sync/command/server_defined_unique_entity.go brave-go-sync/command/server_defined_unique_entity.go
++--- original/brave-go-sync/command/server_defined_unique_entity.go	2026-04-01 17:41:40.000000000 +0000
+++++ brave-go-sync/command/server_defined_unique_entity.go	2026-04-01 19:24:12.000000000 +0000
 +@@ -5,7 +5,6 @@
 + 	"fmt"
 + 	"time"
@@ -2229,9 +2257,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 + 		Version: &version, ParentIdString: &parentID,
 + 		IdString: &idString, Specifics: specifics}
 + 
-+diff -ruN '--exclude=.git' orig/brave-go-sync/datastore/client_item_counts.go work/datastore/client_item_counts.go
-+--- orig/brave-go-sync/datastore/client_item_counts.go	1970-01-01 00:00:00.000000000 +0000
-++++ work/datastore/client_item_counts.go	2026-04-01 19:24:12.000000000 +0000
++diff -ruN original/brave-go-sync/datastore/client_item_counts.go brave-go-sync/datastore/client_item_counts.go
++--- original/brave-go-sync/datastore/client_item_counts.go	1970-01-01 00:00:00.000000000 +0000
+++++ brave-go-sync/datastore/client_item_counts.go	2026-04-01 19:24:12.000000000 +0000
 +@@ -0,0 +1,37 @@
 ++package datastore
 ++
@@ -2270,9 +2298,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 ++		counts.HistoryItemCountPeriod3 +
 ++		counts.HistoryItemCountPeriod4
 ++}
-+diff -ruN '--exclude=.git' orig/brave-go-sync/datastore/entity.go work/datastore/entity.go
-+--- orig/brave-go-sync/datastore/entity.go	1970-01-01 00:00:00.000000000 +0000
-++++ work/datastore/entity.go	2026-04-01 19:24:12.000000000 +0000
++diff -ruN original/brave-go-sync/datastore/entity.go brave-go-sync/datastore/entity.go
++--- original/brave-go-sync/datastore/entity.go	1970-01-01 00:00:00.000000000 +0000
+++++ brave-go-sync/datastore/entity.go	2026-04-01 19:24:12.000000000 +0000
 +@@ -0,0 +1,240 @@
 ++package datastore
 ++
@@ -2514,9 +2542,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 ++	_ sort.Interface = SyncEntityByClientIDID{}
 ++	_ sort.Interface = SyncEntityByMtime{}
 ++)
-+diff -ruN '--exclude=.git' orig/brave-go-sync/datastore/postgres.go work/datastore/postgres.go
-+--- orig/brave-go-sync/datastore/postgres.go	1970-01-01 00:00:00.000000000 +0000
-++++ work/datastore/postgres.go	2026-04-01 19:24:12.000000000 +0000
++diff -ruN original/brave-go-sync/datastore/postgres.go brave-go-sync/datastore/postgres.go
++--- original/brave-go-sync/datastore/postgres.go	1970-01-01 00:00:00.000000000 +0000
+++++ brave-go-sync/datastore/postgres.go	2026-04-01 19:24:12.000000000 +0000
 +@@ -0,0 +1,709 @@
 ++package datastore
 ++
@@ -3227,9 +3255,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 ++	}
 ++	return nil
 ++}
-+diff -ruN '--exclude=.git' orig/brave-go-sync/docker-compose.yml work/docker-compose.yml
-+--- orig/brave-go-sync/docker-compose.yml	2026-04-01 17:41:40.000000000 +0000
-++++ work/docker-compose.yml	2026-04-01 19:24:12.000000000 +0000
++diff -ruN original/brave-go-sync/docker-compose.yml brave-go-sync/docker-compose.yml
++--- original/brave-go-sync/docker-compose.yml	2026-04-01 17:41:40.000000000 +0000
+++++ brave-go-sync/docker-compose.yml	2026-04-01 19:24:12.000000000 +0000
 +@@ -1,31 +1,4 @@
 +-networks:
 +-  sync:
@@ -3300,9 +3328,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 +-      - sync
 ++      - CACHE_BACKEND=memory
 ++      - DATABASE_URL=${DATABASE_URL}
-+diff -ruN '--exclude=.git' orig/brave-go-sync/go.mod work/go.mod
-+--- orig/brave-go-sync/go.mod	2026-04-01 17:41:40.000000000 +0000
-++++ work/go.mod	2026-04-01 19:24:12.000000000 +0000
++diff -ruN original/brave-go-sync/go.mod brave-go-sync/go.mod
++--- original/brave-go-sync/go.mod	2026-04-01 17:41:40.000000000 +0000
+++++ brave-go-sync/go.mod	2026-04-01 19:51:49.263263454 +0000
 +@@ -3,15 +3,11 @@
 + go 1.24.0
 + 
@@ -3320,7 +3348,7 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 + 	github.com/prometheus/client_golang v1.23.2
 + 	github.com/redis/go-redis/v9 v9.17.0
 + 	github.com/rs/zerolog v1.34.0
-+@@ -21,19 +17,6 @@
++@@ -21,28 +17,15 @@
 + 
 + require (
 + 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
@@ -3340,9 +3368,37 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 + 	github.com/beorn7/perks v1.0.1 // indirect
 + 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 + 	github.com/davecgh/go-spew v1.1.1 // indirect
-+diff -ruN '--exclude=.git' orig/brave-go-sync/go.sum work/go.sum
-+--- orig/brave-go-sync/go.sum	2026-04-01 17:41:40.000000000 +0000
-++++ work/go.sum	2026-04-01 19:42:52.756636045 +0000
++ 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
++ 	github.com/go-chi/chi v4.1.2+incompatible // indirect
++-	github.com/gomodule/redigo v2.0.0+incompatible // indirect
+++	github.com/jackc/pgpassfile v1.0.0 // indirect
+++	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
+++	github.com/jackc/puddle/v2 v2.2.2 // indirect
++ 	github.com/hashicorp/golang-lru v1.0.2 // indirect
++-	github.com/jmespath/go-jmespath v0.4.0 // indirect
++-	github.com/kr/text v0.2.0 // indirect
++ 	github.com/mattn/go-colorable v0.1.14 // indirect
++ 	github.com/mattn/go-isatty v0.0.20 // indirect
++ 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
++@@ -50,7 +33,6 @@
++ 	github.com/prometheus/client_model v0.6.2 // indirect
++ 	github.com/prometheus/common v0.66.1 // indirect
++ 	github.com/prometheus/procfs v0.16.1 // indirect
++-	github.com/rogpeppe/go-internal v1.11.0 // indirect
++ 	github.com/rs/xid v1.6.0 // indirect
++ 	github.com/satori/go.uuid v1.2.0 // indirect
++ 	github.com/shengdoushi/base58 v1.0.0 // indirect
++@@ -58,6 +40,7 @@
++ 	github.com/throttled/throttled/v2 v2.13.0 // indirect
++ 	go.yaml.in/yaml/v2 v2.4.2 // indirect
++ 	golang.org/x/crypto v0.45.0 // indirect
+++	golang.org/x/sync v0.16.0 // indirect
++ 	golang.org/x/sys v0.38.0 // indirect
++ 	golang.org/x/text v0.31.0 // indirect
++ 	gopkg.in/yaml.v3 v3.0.1 // indirect
++diff -ruN original/brave-go-sync/go.sum brave-go-sync/go.sum
++--- original/brave-go-sync/go.sum	2026-04-01 17:41:40.000000000 +0000
+++++ brave-go-sync/go.sum	2026-04-01 19:43:39.000000000 +0000
 +@@ -44,9 +44,9 @@
 + github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
 + github.com/brave-intl/bat-go/libs v0.0.0-20250620104757-9e2f8ff87fd8 h1:DUBBDWBwozxpET6HCTDSRKAfyiqKRNvOyeqI463epaI=
@@ -3428,9 +3484,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/0001-postgres-and-dockerhub.
 + golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 + golang.org/x/term v0.0.0-20210927222741-03fcf44c2211/go.mod h1:jbD1KX2456YbFQfuXm/mYQcufACuNUgVhRMnK/tPxf8=
 + golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
-diff -ruN '--exclude=.git' orig/brave-go-sync/patch/DELETE_FILES.txt work/patch/DELETE_FILES.txt
---- orig/brave-go-sync/patch/DELETE_FILES.txt	1970-01-01 00:00:00.000000000 +0000
-+++ work/patch/DELETE_FILES.txt	2026-04-01 19:24:12.000000000 +0000
+diff -ruN original/brave-go-sync/patch/DELETE_FILES.txt brave-go-sync/patch/DELETE_FILES.txt
+--- original/brave-go-sync/patch/DELETE_FILES.txt	1970-01-01 00:00:00.000000000 +0000
++++ brave-go-sync/patch/DELETE_FILES.txt	2026-04-01 19:24:12.000000000 +0000
 @@ -0,0 +1,11 @@
 +command/command_test.go
 +command/server_defined_unique_entity_test.go
@@ -3443,10 +3499,10 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/DELETE_FILES.txt work/patch/
 +datastore/sync_entity_test.go
 +dynamo.Dockerfile
 +schema/dynamodb/table.json
-diff -ruN '--exclude=.git' orig/brave-go-sync/patch/PORTING_NOTES.md work/patch/PORTING_NOTES.md
---- orig/brave-go-sync/patch/PORTING_NOTES.md	1970-01-01 00:00:00.000000000 +0000
-+++ work/patch/PORTING_NOTES.md	2026-04-01 19:24:12.000000000 +0000
-@@ -0,0 +1,51 @@
+diff -ruN original/brave-go-sync/patch/PORTING_NOTES.md brave-go-sync/patch/PORTING_NOTES.md
+--- original/brave-go-sync/patch/PORTING_NOTES.md	1970-01-01 00:00:00.000000000 +0000
++++ brave-go-sync/patch/PORTING_NOTES.md	2026-04-01 19:52:07.773913643 +0000
+@@ -0,0 +1,55 @@
 +# Porting notes
 +
 +## Scope
@@ -3492,15 +3548,19 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/PORTING_NOTES.md work/patch/
 +4. Review upstream changes in the files listed above before merging.
 +5. Rebuild the unified diff if the patch set changes.
 +
++## Module maintenance
++
++Keep `go.mod` and `go.sum` in sync after dependency changes. The PostgreSQL backend adds `pgx` transitives that must remain in the tidy module graph for Go 1.24 CI runs.
++
 +## Areas that may need manual review
 +
 +- Any upstream change touching datastore interfaces or entity validation.
 +- Any upstream change touching cache initialization or Redis handling.
 +- Any upstream change touching GitHub Actions workflow names or trigger logic.
 +- Any upstream change touching Dockerfile, runtime environment variables, or compose files.
-diff -ruN '--exclude=.git' orig/brave-go-sync/patch/README.md work/patch/README.md
---- orig/brave-go-sync/patch/README.md	1970-01-01 00:00:00.000000000 +0000
-+++ work/patch/README.md	2026-04-01 19:24:12.000000000 +0000
+diff -ruN original/brave-go-sync/patch/README.md brave-go-sync/patch/README.md
+--- original/brave-go-sync/patch/README.md	1970-01-01 00:00:00.000000000 +0000
++++ brave-go-sync/patch/README.md	2026-04-01 19:24:12.000000000 +0000
 @@ -0,0 +1,10 @@
 +# Local patch set
 +
@@ -3512,9 +3572,9 @@ diff -ruN '--exclude=.git' orig/brave-go-sync/patch/README.md work/patch/README.
 +- `0001-postgres-and-dockerhub.diff` — unified diff against the original upstream snapshot used for this change set.
 +- `DELETE_FILES.txt` — files removed as part of the PostgreSQL refactor.
 +- `PORTING_NOTES.md` — structure and merge notes for future updates.
-diff -ruN '--exclude=.git' orig/brave-go-sync/server/server.go work/server/server.go
---- orig/brave-go-sync/server/server.go	2026-04-01 17:41:40.000000000 +0000
-+++ work/server/server.go	2026-04-01 19:24:12.000000000 +0000
+diff -ruN original/brave-go-sync/server/server.go brave-go-sync/server/server.go
+--- original/brave-go-sync/server/server.go	2026-04-01 17:41:40.000000000 +0000
++++ brave-go-sync/server/server.go	2026-04-01 19:24:12.000000000 +0000
 @@ -64,14 +64,14 @@
  	r.Use(batware.BearerToken)
  	r.Use(middleware.CommonResponseHeaders)
