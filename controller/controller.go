@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/brave-intl/bat-go/libs/closers"
-	"github.com/brave-intl/bat-go/libs/middleware"
+	batmiddleware "github.com/brave-intl/bat-go/libs/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/protobuf/proto"
@@ -23,12 +23,20 @@ const (
 	payloadLimit10MB = 1024 * 1024 * 10
 )
 
+// MountSyncRoutes adds the sync command endpoints to the provided router.
+func MountSyncRoutes(r chi.Router, cache *cache.Cache, datastore datastore.Datastore) {
+	r.Use(syncMiddleware.Auth)
+	r.Use(syncMiddleware.DisabledChain)
+
+	h := batmiddleware.InstrumentHandler("Command", Command(cache, datastore))
+	r.Method("POST", "/command", h)
+	r.Method("POST", "/command/", h)
+}
+
 // SyncRouter add routers for command and auth endpoint requests.
 func SyncRouter(cache *cache.Cache, datastore datastore.Datastore) chi.Router {
 	r := chi.NewRouter()
-	r.Use(syncMiddleware.Auth)
-	r.Use(syncMiddleware.DisabledChain)
-	r.Method("POST", "/command/", middleware.InstrumentHandler("Command", Command(cache, datastore)))
+	MountSyncRoutes(r, cache, datastore)
 	return r
 }
 

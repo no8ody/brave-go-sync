@@ -77,9 +77,21 @@ func setupRouter(ctx context.Context, logger *zerolog.Logger) (context.Context, 
 	ctx = context.WithValue(ctx, syncContext.ContextKeyDatastore, db)
 	ctx = context.WithValue(ctx, syncContext.ContextKeyCache, &cache)
 
-	r.Mount("/v2", controller.SyncRouter(
-		cache,
-		datastore.NewDatastoreWithPrometheus(db, "postgres")))
+	r.Group(func(r chi.Router) {
+		controller.MountSyncRoutes(
+			r,
+			cache,
+			datastore.NewDatastoreWithPrometheus(db, "postgres"),
+		)
+	})
+
+	r.Route("/v2", func(r chi.Router) {
+		controller.MountSyncRoutes(
+			r,
+			cache,
+			datastore.NewDatastoreWithPrometheus(db, "postgres"),
+		)
+	})
 	r.Get("/metrics", batware.Metrics())
 
 	log.Info().
